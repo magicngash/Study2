@@ -1,0 +1,2373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KCSE Biology Training - Ecology</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        /* All the CSS styles from the previous code */
+        :root {
+            --primary-color: #16a34a;
+            --secondary-color: #0d9488;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        .header {
+            background-color: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: var(--bg-tertiary);
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .main-layout {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar {
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        .lesson-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+
+        .lesson-item:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        .lesson-item.active {
+            background-color: var(--bg-tertiary);
+        }
+
+        .lesson-content {
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: var(--bg-tertiary);
+        }
+
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 5px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(22, 163, 74, 0.2);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success-color);
+            background-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error-color);
+            background-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+            transition: all 0.2s;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-tertiary);
+            color: white;
+        }
+
+        .btn-large {
+            padding: 15px 30px;
+            font-size: 18px;
+        }
+
+        .btn-edit {
+            background-color: #0ea5e9;
+            color: white;
+        }
+
+        .btn-save {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-cancel {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .btn-audio {
+            background-color: #4f46e5;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timer {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: var(--bg-tertiary);
+            margin-left: 10px;
+        }
+
+        .timer.warning {
+            background-color: rgba(239, 68, 68, 0.3);
+            color: var(--error-color);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .explanation.correct {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #4ade80;
+        }
+
+        .explanation.incorrect {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 15px;
+        }
+
+        .modal-content {
+            background-color: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .history-item {
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background-color: var(--bg-tertiary);
+        }
+
+        .fill-blank {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--bg-tertiary);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .intro-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            text-align: center;
+            padding: 20px 15px;
+        }
+
+        .intro-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .intro-section {
+            max-width: 800px;
+            margin: 30px auto;
+            text-align: left;
+            background-color: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .intro-section h3 {
+            color: #4ade80;
+            margin-top: 0;
+        }
+
+        .intro-section ul {
+            padding-left: 20px;
+        }
+
+        .intro-section li {
+            margin-bottom: 10px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background-color: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .edit-controls {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .edit-textarea {
+            width: 100%;
+            min-height: 200px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 5px;
+            padding: 10px;
+            font-family: inherit;
+            font-size: inherit;
+            resize: vertical;
+        }
+
+        .edit-input {
+            width: 100%;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 5px;
+            padding: 10px;
+            font-family: inherit;
+            font-size: inherit;
+            margin-bottom: 10px;
+        }
+
+        .edit-select {
+            width: 100%;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 5px;
+            padding: 10px;
+            font-family: inherit;
+            font-size: inherit;
+            margin-bottom: 10px;
+        }
+
+        .edit-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .edit-option input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .edit-option button {
+            background-color: var(--error-color);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .add-option {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .edit-section {
+            background-color: var(--bg-tertiary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .edit-section h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #4ade80;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s;
+            max-width: 80%;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+
+        .notification.success {
+            background-color: var(--success-color);
+        }
+
+        .notification.error {
+            background-color: var(--error-color);
+        }
+
+        .mobile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .mobile-menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        .quiz-options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .true-false-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .content-section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .content-section:last-child {
+            border-bottom: none;
+        }
+
+        .content-section h3 {
+            color: #4ade80;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .content-section ul {
+            padding-left: 20px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        .content-section li {
+            margin-bottom: 5px;
+        }
+
+        /* Simplified Audio Button Styles */
+        .audio-button-container {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .audio-status {
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .audio-playing {
+            color: var(--success-color);
+        }
+
+        .audio-upload {
+            margin-bottom: 15px;
+        }
+
+        .upload-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .audio-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .transcript-container {
+            margin-top: 20px;
+            background-color: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .transcript-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .transcript-text {
+            line-height: 1.6;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .transcript-current {
+            background-color: rgba(22, 163, 74, 0.2);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        @media (min-width: 768px) {
+            .main-layout {
+                flex-direction: row;
+            }
+            
+            .sidebar {
+                width: 250px;
+                margin-right: 20px;
+                margin-bottom: 0;
+                float: left;
+            }
+            
+            .content {
+                overflow: hidden;
+            }
+            
+            .quiz-options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar-toggle {
+                display: none;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 15px;
+            }
+            
+            .intro-title {
+                font-size: 2rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .navigation button {
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .edit-controls {
+                justify-content: center;
+            }
+            
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: 80%;
+                max-width: 300px;
+                z-index: 999;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                overflow-y: auto;
+                margin-bottom: 0;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .sidebar-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .quiz-options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root">Loading application...</div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const BiologyCourse = () => {
+            const [showIntro, setShowIntro] = useState(true);
+            const [currentModule, setCurrentModule] = useState(0);
+            const [currentLesson, setCurrentLesson] = useState(0);
+            const [completedLessons, setCompletedLessons] = useState(new Set());
+            const [quizAnswers, setQuizAnswers] = useState({});
+            const [showResults, setShowResults] = useState(false);
+            const [timeLeft, setTimeLeft] = useState(null);
+            const [timerActive, setTimerActive] = useState(false);
+            const [quizAttempts, setQuizAttempts] = useState({});
+            const [quizHistory, setQuizHistory] = useState({});
+            const [showHistoryModal, setShowHistoryModal] = useState(false);
+            const [editMode, setEditMode] = useState(false);
+            const [notification, setNotification] = useState({ show: false, message: '', type: '' });
+            const [sidebarOpen, setSidebarOpen] = useState(false);
+            const [audioData, setAudioData] = useState({});
+            const [isPlaying, setIsPlaying] = useState(false);
+            const [showTranscript, setShowTranscript] = useState(false);
+            const [currentTranscriptIndex, setCurrentTranscriptIndex] = useState(0);
+            const timerRef = useRef(null);
+            const audioRef = useRef(null);
+
+            // KCSE Biology Course Data with Pre-loaded Audio URLs
+            const initialCourse = {
+                title: "KCSE Biology Training - Ecology",
+                modules: [
+                    {
+                        title: "Introduction to Ecology",
+                        lessons: [
+                            {
+                                title: "Definition and Branches of Ecology",
+                                content: `## 1. Definition of Ecology
+
+Ecology is the study of the relationship between living organisms and their environment.
+
+The environment includes both living (biotic) and non-living (abiotic) components.
+
+## 2. Branches of Ecology
+
+### 1. Autecology – Study of an individual organism in relation to its environment.
+
+### 2. Synecology – Study of groups of organisms (communities) and how they interact with each other and their environment.`,
+                                type: "content",
+                                transcript: [
+                                    "Ecology is the study of the relationship between living organisms and their environment.",
+                                    "The environment includes both living (biotic) and non-living (abiotic) components.",
+                                    "There are two main branches of ecology: autecology and synecology.",
+                                    "Autecology is the study of an individual organism in relation to its environment.",
+                                    "Synecology is the study of groups of organisms or communities and how they interact with each other and their environment."
+                                ],
+                                // Pre-loaded audio URL - replace with your actual audio file URL
+                                audioUrl: "https://example.com/audio/ecology-lesson1-1.mp3"
+                            },
+                            {
+                                title: "Basic Ecological Terms",
+                                content: `## 3. Basic Ecological Terms
+
+**Habitat**: The natural home of an organism.
+*Example: A frog's habitat is a pond.*
+
+**Population**: Members of the same species living in the same area at the same time.
+
+**Community**: All organisms of different species living in a particular area.
+
+**Ecosystem**: A natural unit made up of living organisms and their non-living environment interacting together.
+
+**Biosphere**: The part of the Earth where life exists.`,
+                                type: "content",
+                                transcript: [
+                                    "Let's look at some basic ecological terms.",
+                                    "First, habitat refers to the natural home of an organism. For example, a frog's habitat is a pond.",
+                                    "Population refers to members of the same species living in the same area at the same time.",
+                                    "Community is all organisms of different species living in a particular area.",
+                                    "An ecosystem is a natural unit made up of living organisms and their non-living environment interacting together.",
+                                    "Finally, the biosphere is the part of the Earth where life exists."
+                                ],
+                                // Pre-loaded audio URL - replace with your actual audio file URL
+                                audioUrl: "https://example.com/audio/ecology-lesson1-2.mp3"
+                            },
+                            {
+                                title: "Quiz: Basic Ecological Concepts",
+                                timer: 180, // 3 minutes in seconds
+                                questions: [
+                                    {
+                                        q: "Ecology is the study of the relationship between:",
+                                        type: "multiple",
+                                        options: [
+                                            "Only living organisms", 
+                                            "Only non-living environment", 
+                                            "Living organisms and their environment", 
+                                            "Human activities only"
+                                        ],
+                                        correct: 2,
+                                        explanation: "Ecology is the study of the relationship between living organisms and their environment, including both biotic and abiotic components."
+                                    },
+                                    {
+                                        q: "Autecology focuses on studying:",
+                                        type: "multiple",
+                                        options: [
+                                            "Groups of organisms", 
+                                            "An individual organism in relation to its environment", 
+                                            "Only non-living components", 
+                                            "Human impact on environment"
+                                        ],
+                                        correct: 1,
+                                        explanation: "Autecology is the study of an individual organism in relation to its environment."
+                                    },
+                                    {
+                                        q: "A natural unit made up of living organisms and their non-living environment interacting together is called:",
+                                        type: "fillblank",
+                                        correct: "ecosystem",
+                                        alternatives: ["ecosystem", "biosphere", "community", "habitat"],
+                                        explanation: "An ecosystem is a natural unit made up of living organisms and their non-living environment interacting together."
+                                    }
+                                ],
+                                type: "quiz"
+                            }
+                        ]
+                    },
+                    {
+                        title: "Components of Ecosystem",
+                        lessons: [
+                            {
+                                title: "Biotic and Abiotic Components",
+                                content: `## 4. Components of an Ecosystem
+
+### (a) Biotic (living) components:
+
+**Producers (autotrophs)**: Green plants that make food through photosynthesis.
+
+**Consumers (heterotrophs)**: Depend on others for food.
+- **Primary consumers**: Herbivores
+- **Secondary consumers**: Carnivores
+- **Tertiary consumers**: Top predators
+
+**Decomposers**: Bacteria and fungi that break down dead matter.
+
+### (b) Abiotic (non-living) components:
+
+- Light
+- Temperature
+- Water
+- Air
+- Soil
+- Minerals`,
+                                type: "content",
+                                transcript: [
+                                    "Let's explore the components of an ecosystem.",
+                                    "Ecosystems consist of both biotic and abiotic components.",
+                                    "Biotic components are the living parts of an ecosystem.",
+                                    "Producers, or autotrophs, are green plants that make food through photosynthesis.",
+                                    "Consumers, or heterotrophs, depend on others for food. This includes primary consumers like herbivores, secondary consumers like carnivores, and tertiary consumers which are top predators.",
+                                    "Decomposers like bacteria and fungi break down dead matter.",
+                                    "Abiotic components are the non-living parts of an ecosystem, including light, temperature, water, air, soil, and minerals."
+                                ],
+                                // Pre-loaded audio URL - replace with your actual audio file URL
+                                audioUrl: "https://example.com/audio/ecosystem-components.mp3"
+                            },
+                            {
+                                title: "Ecosystem Relationships",
+                                content: `## 5. Ecosystem Relationships
+
+### 1. Predation: One organism (predator) feeds on another (prey).
+*Example: Lion and zebra.*
+
+### 2. Parasitism: One organism (parasite) benefits while the host is harmed.
+*Example: Tapeworm in humans.*
+
+### 3. Mutualism: Both organisms benefit.
+*Example: Nitrogen-fixing bacteria and leguminous plants.*
+
+### 4. Commensalism: One benefits while the other is unaffected.
+*Example: Remora fish and shark.*
+
+### 5. Competition: Organisms fight for limited resources such as food, light, or space.`,
+                                type: "content",
+                                transcript: [
+                                    "Now let's examine the different types of relationships in ecosystems.",
+                                    "Predation is when one organism, the predator, feeds on another, the prey. An example is a lion and a zebra.",
+                                    "In parasitism, one organism, the parasite, benefits while the host is harmed. An example is a tapeworm in humans.",
+                                    "Mutualism is a relationship where both organisms benefit. An example is nitrogen-fixing bacteria and leguminous plants.",
+                                    "Commensalism occurs when one organism benefits while the other is unaffected. An example is the remora fish and shark.",
+                                    "Finally, competition happens when organisms fight for limited resources such as food, light, or space."
+                                ],
+                                // Pre-loaded audio URL - replace with your actual audio file URL
+                                audioUrl: "https://example.com/audio/ecosystem-relationships.mp3"
+                            },
+                            {
+                                title: "Quiz: Ecosystem Components",
+                                timer: 150, // 2.5 minutes in seconds
+                                questions: [
+                                    {
+                                        q: "Green plants that make food through photosynthesis are called:",
+                                        type: "multiple",
+                                        options: [
+                                            "Consumers", 
+                                            "Producers", 
+                                            "Decomposers", 
+                                            "Parasites"
+                                        ],
+                                        correct: 1,
+                                        explanation: "Producers (autotrophs) are green plants that make food through photosynthesis."
+                                    },
+                                    {
+                                        q: "In a mutualistic relationship, both organisms benefit from the interaction.",
+                                        type: "truefalse",
+                                        correct: true,
+                                        explanation: "Mutualism is a relationship where both organisms benefit, such as nitrogen-fixing bacteria and leguminous plants."
+                                    },
+                                    {
+                                        q: "Bacteria and fungi that break down dead matter are called ________.",
+                                        type: "fillblank",
+                                        correct: "decomposers",
+                                        alternatives: ["decomposers", "producers", "consumers", "parasites"],
+                                        explanation: "Decomposers are bacteria and fungi that break down dead matter and recycle nutrients back into the ecosystem."
+                                    }
+                                ],
+                                type: "quiz"
+                            }
+                        ]
+                    },
+                    {
+                        title: "Energy Flow and Nutrient Cycles",
+                        lessons: [
+                            {
+                                title: "Feeding Relationships and Energy Flow",
+                                content: `## 6. Feeding Relationships
+
+### (a) Food Chain: A sequence showing who eats whom.
+*Example:*
+Grass → Grasshopper → Frog → Snake → Eagle
+
+### (b) Food Web: A network of interconnected food chains.
+
+### (c) Trophic Levels:
+Each step in a food chain is a trophic level.
+- 1st level: Producers
+- 2nd level: Primary consumers
+- 3rd level: Secondary consumers, etc.
+
+### (d) Energy Flow:
+Energy decreases along the food chain due to loss as heat, waste, and movement.`,
+                                type: "content",
+                                transcript: [
+                                    "Let's explore feeding relationships and energy flow in ecosystems.",
+                                    "A food chain is a sequence showing who eats whom. For example, grass is eaten by a grasshopper, which is eaten by a frog, which is eaten by a snake, which is eaten by an eagle.",
+                                    "A food web is a network of interconnected food chains that shows the complex feeding relationships in an ecosystem.",
+                                    "Each step in a food chain is called a trophic level. The first level is producers, the second level is primary consumers, and the third level is secondary consumers, and so on.",
+                                    "Energy decreases along the food chain due to loss as heat, waste, and movement. Only about 10% of energy is typically transferred from one trophic level to the next."
+                                ],
+                                // Pre-loaded audio URL - replace with your actual audio file URL
+                                audioUrl: "https://example.com/audio/energy-flow.mp3"
+                            },
+                            {
+                                title: "Nutrient Cycles",
+                                content: `## 7. Nutrient Cycles
+
+### (a) Carbon Cycle
+
+- Carbon dioxide is used by plants during photosynthesis.
+- It returns to the atmosphere through respiration, decomposition, and combustion.
+
+### (b) Nitrogen Cycle
+
+- Nitrogen-fixing bacteria convert nitrogen gas into nitrates.
+- Nitrates are absorbed by plants → animals → decomposers → back to the soil and air.
+
+These cycles ensure that essential nutrients are continuously recycled in the ecosystem, supporting life processes.`,
+                                type: "content",
+                                transcript: [
+                                    "Now let's examine nutrient cycles in ecosystems.",
+                                    "First, the carbon cycle. Carbon dioxide is used by plants during photosynthesis. It returns to the atmosphere through respiration, decomposition, and combustion.",
+                                    "Second, the nitrogen cycle. Nitrogen-fixing bacteria convert nitrogen gas into nitrates. Nitrates are absorbed by plants, then passed to animals, then to decomposers, and finally back to the soil and air.",
+                                    "These cycles ensure that essential nutrients are continuously recycled in the ecosystem, supporting life processes and maintaining the balance of nature."
+                                ],
+                                // Pre-loaded audio URL - replace with your actual audio file URL
+                                audioUrl: "https://example.com/audio/nutrient-cycles.mp3"
+                            },
+                            {
+                                title: "Quiz: Energy Flow and Nutrient Cycles",
+                                timer: 120, // 2 minutes in seconds
+                                questions: [
+                                    {
+                                        q: "In a food chain, organisms that feed on producers are called:",
+                                        type: "multiple",
+                                        options: [
+                                            "Secondary consumers", 
+                                            "Primary consumers", 
+                                            "Tertiary consumers", 
+                                            "Decomposers"
+                                        ],
+                                        correct: 1,
+                                        explanation: "Primary consumers are herbivores that feed on producers (plants)."
+                                    },
+                                    {
+                                        q: "Energy decreases along the food chain because it is lost as heat, waste, and through movement.",
+                                        type: "truefalse",
+                                        correct: true,
+                                        explanation: "Energy decreases along the food chain due to loss as heat, waste, and movement, with only about 10% typically transferred between trophic levels."
+                                    },
+                                    {
+                                        q: "The process by which nitrogen gas is converted into nitrates by bacteria is called nitrogen ________.",
+                                        type: "fillblank",
+                                        correct: "fixation",
+                                        alternatives: ["fixation", "cycle", "assimilation", "nitrification"],
+                                        explanation: "Nitrogen fixation is the process by which nitrogen gas is converted into nitrates by nitrogen-fixing bacteria."
+                                    }
+                                ],
+                                type: "quiz"
+                            }
+                        ]
+                    },
+                    {
+                        title: "Adaptations and Human Impact",
+                        lessons: [
+                            {
+                                title: "Adaptations of Organisms",
+                                content: `## 8. Adaptations of Organisms to Their Habitats
+
+### Aquatic plants (Hydrophytes): Have air spaces, thin cuticles, and flexible stems.
+
+### Desert plants (Xerophytes): Have thick cuticles, sunken stomata, and fleshy stems.
+
+### Animals:
+- Desert animals conserve water (e.g., camel).
+- Aquatic animals have gills, fins, and streamlined bodies.
+
+These adaptations help organisms survive in their specific environments by addressing challenges like water availability, temperature extremes, and predation.`,
+                                type: "content",
+                                transcript: [
+                                    "Let's explore how organisms adapt to their habitats.",
+                                    "Aquatic plants, called hydrophytes, have special adaptations like air spaces, thin cuticles, and flexible stems to survive in water.",
+                                    "Desert plants, called xerophytes, have adaptations like thick cuticles, sunken stomata, and fleshy stems to conserve water.",
+                                    "Animals also have specific adaptations. Desert animals like camels have adaptations to conserve water, while aquatic animals have gills, fins, and streamlined bodies for life in water.",
+                                    "These adaptations help organisms survive in their specific environments by addressing challenges like water availability, temperature extremes, and predation."
+                                ],
+                                // Pre-loaded audio URL - replace with your actual audio file URL
+                                audioUrl: "https://example.com/audio/adaptations.mp3"
+                            },
+                            {
+                                title: "Population Ecology and Human Impact",
+                                content: `## 9. Population Ecology
+
+**Population size**: Total number of individuals.
+
+**Population density**: Number per unit area.
+
+### Factors affecting population:
+- Birth rate
+- Death rate
+- Immigration
+- Emigration
+
+### Sampling methods:
+- Quadrat method (for plants)
+- Capture-recapture method (for animals)
+
+## 10. Human Impact on the Environment
+
+### (a) Positive impacts:
+- Afforestation and reforestation
+- Wildlife conservation
+- Controlled grazing
+- Proper waste management
+
+### (b) Negative impacts:
+- Deforestation
+- Pollution (air, water, soil)
+- Overgrazing
+- Industrialization
+- Poor farming practices`,
+                                type: "content",
+                                transcript: [
+                                    "Now let's look at population ecology and human impact on the environment.",
+                                    "Population ecology studies the size and density of populations. Population size is the total number of individuals, while population density is the number per unit area.",
+                                    "Factors affecting population include birth rate, death rate, immigration, and emigration.",
+                                    "Scientists use sampling methods like the quadrat method for plants and the capture-recapture method for animals to study populations.",
+                                    "Humans have both positive and negative impacts on the environment. Positive impacts include afforestation, wildlife conservation, controlled grazing, and proper waste management.",
+                                    "Negative impacts include deforestation, pollution of air, water, and soil, overgrazing, industrialization, and poor farming practices."
+                                ],
+                                // Pre-loaded audio URL - replace with your actual audio file URL
+                                audioUrl: "https://example.com/audio/human-impact.mp3"
+                            },
+                            {
+                                title: "Quiz: Adaptations and Conservation",
+                                timer: 180, // 3 minutes in seconds
+                                questions: [
+                                    {
+                                        q: "Plants adapted to desert conditions with thick cuticles and sunken stomata are called:",
+                                        type: "multiple",
+                                        options: [
+                                            "Hydrophytes", 
+                                            "Xerophytes", 
+                                            "Mesophytes", 
+                                            "Halophytes"
+                                        ],
+                                        correct: 1,
+                                        explanation: "Xerophytes are plants adapted to desert conditions with thick cuticles and sunken stomata to reduce water loss."
+                                    },
+                                    {
+                                        q: "Afforestation and wildlife conservation are examples of positive human impacts on the environment.",
+                                        type: "truefalse",
+                                        correct: true,
+                                        explanation: "Afforestation and wildlife conservation are indeed positive human impacts that help preserve and restore ecosystems."
+                                    },
+                                    {
+                                        q: "The method of estimating population size by capturing, marking, releasing, and recapturing animals is called the ________ method.",
+                                        type: "fillblank",
+                                        correct: "capture-recapture",
+                                        alternatives: ["capture-recapture", "quadrat", "transect", "sampling"],
+                                        explanation: "The capture-recapture method is used to estimate animal population sizes by capturing, marking, releasing, and recapturing individuals."
+                                    }
+                                ],
+                                type: "quiz"
+                            }
+                        ]
+                    },
+                    {
+                        title: "Conservation and Ecological Importance",
+                        lessons: [
+                            {
+                                title: "Conservation of Natural Resources",
+                                content: `## 11. Conservation of Natural Resources
+
+Conservation means wise use and management of resources for future generations.
+
+### Methods:
+- Afforestation
+- Wildlife reserves
+- Soil conservation
+- Water management
+- Pollution control
+
+Effective conservation requires balancing human needs with the health of ecosystems, ensuring that natural resources remain available for future generations while maintaining biodiversity and ecological balance.`,
+                                type: "content",
+                                transcript: [
+                                    "Let's discuss the conservation of natural resources.",
+                                    "Conservation means the wise use and management of resources for future generations.",
+                                    "Methods of conservation include afforestation, establishing wildlife reserves, soil conservation, water management, and pollution control.",
+                                    "Effective conservation requires balancing human needs with the health of ecosystems, ensuring that natural resources remain available for future generations while maintaining biodiversity and ecological balance."
+                                ],
+                                // Pre-loaded audio URL - replace with your actual audio file URL
+                                audioUrl: "https://example.com/audio/conservation.mp3"
+                            },
+                            {
+                                title: "Ecological Importance",
+                                content: `## 12. Ecological Importance
+
+- Maintains balance of nature
+- Provides food and raw materials
+- Regulates gases like oxygen and carbon dioxide
+- Supports biodiversity
+
+Ecology helps us understand the interconnectedness of all living things and their environment. By studying ecological relationships and processes, we can better manage natural resources and mitigate human impacts on the environment.`,
+                                type: "content",
+                                transcript: [
+                                    "Finally, let's explore the ecological importance of these concepts.",
+                                    "Ecology maintains the balance of nature, provides food and raw materials, regulates gases like oxygen and carbon dioxide, and supports biodiversity.",
+                                    "Ecology helps us understand the interconnectedness of all living things and their environment.",
+                                    "By studying ecological relationships and processes, we can better manage natural resources and mitigate human impacts on the environment.",
+                                    "Understanding ecology is crucial for addressing environmental challenges and ensuring a sustainable future for our planet."
+                                ],
+                                // Pre-loaded audio URL - replace with your actual audio file URL
+                                audioUrl: "https://example.com/audio/ecological-importance.mp3"
+                            },
+                            {
+                                title: "Quiz: Conservation and Importance",
+                                timer: 120, // 2 minutes in seconds
+                                questions: [
+                                    {
+                                        q: "Which of the following is NOT a method of conservation?",
+                                        type: "multiple",
+                                        options: [
+                                            "Afforestation", 
+                                            "Wildlife reserves", 
+                                            "Deforestation", 
+                                            "Soil conservation"
+                                        ],
+                                        correct: 2,
+                                        explanation: "Deforestation is not a conservation method; it's actually a negative human impact that conservation aims to prevent."
+                                    },
+                                    {
+                                        q: "Ecology helps regulate atmospheric gases such as oxygen and carbon dioxide.",
+                                        type: "truefalse",
+                                        correct: true,
+                                        explanation: "One of the ecological importance points is that ecology helps regulate gases like oxygen and carbon dioxide through processes like photosynthesis and respiration."
+                                    },
+                                    {
+                                        q: "The wise use and management of resources for future generations is called ________.",
+                                        type: "fillblank",
+                                        correct: "conservation",
+                                        alternatives: ["conservation", "preservation", "exploitation", "utilization"],
+                                        explanation: "Conservation is the wise use and management of resources for future generations."
+                                    }
+                                ],
+                                type: "quiz"
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            const [course, setCourse] = useState(initialCourse);
+            
+            // Load saved course data from localStorage on component mount
+            useEffect(() => {
+                try {
+                    const savedCourse = localStorage.getItem('biologyCourseData');
+                    if (savedCourse) {
+                        setCourse(JSON.parse(savedCourse));
+                    }
+                } catch (e) {
+                    console.error('Error loading saved course data:', e);
+                }
+            }, []);
+
+            // Load saved audio data from localStorage on component mount
+            useEffect(() => {
+                try {
+                    const savedAudioData = localStorage.getItem('biologyAudioData');
+                    if (savedAudioData) {
+                        setAudioData(JSON.parse(savedAudioData));
+                    }
+                } catch (e) {
+                    console.error('Error loading saved audio data:', e);
+                }
+            }, []);
+
+            // Save course data to localStorage whenever it changes
+            useEffect(() => {
+                try {
+                    localStorage.setItem('biologyCourseData', JSON.stringify(course));
+                } catch (e) {
+                    console.error('Error saving course data:', e);
+                }
+            }, [course]);
+
+            // Save audio data to localStorage whenever it changes
+            useEffect(() => {
+                try {
+                    localStorage.setItem('biologyAudioData', JSON.stringify(audioData));
+                } catch (e) {
+                    console.error('Error saving audio data:', e);
+                }
+            }, [audioData]);
+
+            const currentModuleData = course.modules[currentModule];
+            const currentLessonData = currentModuleData.lessons[currentLesson];
+            const lessonKey = `${currentModule}-${currentLesson}`;
+
+            // Initialize audio data for current lesson if not exists
+            useEffect(() => {
+                if (currentLessonData.type === 'content' && !audioData[lessonKey]) {
+                    setAudioData(prev => ({
+                        ...prev,
+                        [lessonKey]: {
+                            url: currentLessonData.audioUrl || null, // Use pre-loaded URL if available
+                            transcript: currentLessonData.transcript || []
+                        }
+                    }));
+                }
+            }, [currentModule, currentLesson, currentLessonData.type, lessonKey, audioData]);
+
+            // Initialize quiz attempts and history for current lesson if not exists
+            useEffect(() => {
+                if (currentLessonData.type === 'quiz') {
+                    if (!quizAttempts[lessonKey]) {
+                        setQuizAttempts(prev => ({
+                            ...prev,
+                            [lessonKey]: 0
+                        }));
+                    }
+                    
+                    if (!quizHistory[lessonKey]) {
+                        setQuizHistory(prev => ({
+                            ...prev,
+                            [lessonKey]: []
+                        }));
+                    }
+                }
+            }, [currentModule, currentLesson, currentLessonData.type, lessonKey, quizAttempts, quizHistory]);
+
+            // Timer effect
+            useEffect(() => {
+                if (timerActive && timeLeft > 0) {
+                    timerRef.current = setTimeout(() => {
+                        setTimeLeft(timeLeft - 1);
+                    }, 1000);
+                } else if (timerActive && timeLeft === 0) {
+                    // Time's up - auto-submit quiz
+                    setTimerActive(false);
+                    submitQuiz();
+                }
+
+                return () => {
+                    if (timerRef.current) {
+                        clearTimeout(timerRef.current);
+                    }
+                };
+            }, [timerActive, timeLeft]);
+
+            // Start timer when quiz begins
+            useEffect(() => {
+                if (currentLessonData.type === 'quiz' && currentLessonData.timer && !showResults) {
+                    setTimeLeft(currentLessonData.timer);
+                    setTimerActive(true);
+                } else {
+                    setTimeLeft(null);
+                    setTimerActive(false);
+                }
+            }, [currentLesson, currentLessonData]);
+
+            // Audio player effect
+            useEffect(() => {
+                const audio = audioRef.current;
+                if (!audio) return;
+
+                const handleEnded = () => {
+                    setIsPlaying(false);
+                    setCurrentTranscriptIndex(0);
+                };
+
+                audio.addEventListener('ended', handleEnded);
+
+                return () => {
+                    audio.removeEventListener('ended', handleEnded);
+                };
+            }, [audioData, lessonKey]);
+
+            // Show notification
+            const showNotification = (message, type = 'success') => {
+                setNotification({ show: true, message, type });
+                setTimeout(() => {
+                    setNotification({ show: false, message: '', type: '' });
+                }, 3000);
+            };
+
+            const handleNext = () => {
+                if (currentLesson < currentModuleData.lessons.length - 1) {
+                    setCurrentLesson(currentLesson + 1);
+                    setShowResults(false);
+                    setEditMode(false);
+                    setIsPlaying(false);
+                    setCurrentTranscriptIndex(0);
+                } else if (currentModule < course.modules.length - 1) {
+                    setCurrentModule(currentModule + 1);
+                    setCurrentLesson(0);
+                    setShowResults(false);
+                    setEditMode(false);
+                    setIsPlaying(false);
+                    setCurrentTranscriptIndex(0);
+                }
+            };
+
+            const handlePrevious = () => {
+                if (currentLesson > 0) {
+                    setCurrentLesson(currentLesson - 1);
+                    setShowResults(false);
+                    setEditMode(false);
+                    setIsPlaying(false);
+                    setCurrentTranscriptIndex(0);
+                } else if (currentModule > 0) {
+                    setCurrentModule(currentModule - 1);
+                    setCurrentLesson(course.modules[currentModule - 1].lessons.length - 1);
+                    setShowResults(false);
+                    setEditMode(false);
+                    setIsPlaying(false);
+                    setCurrentTranscriptIndex(0);
+                }
+            };
+
+            const handleComplete = () => {
+                setCompletedLessons(new Set([...completedLessons, lessonKey]));
+                handleNext();
+            };
+
+            const handleQuizAnswer = (questionIndex, answerIndex) => {
+                setQuizAnswers({
+                    ...quizAnswers,
+                    [`${lessonKey}-${questionIndex}`]: answerIndex
+                });
+            };
+
+            const handleFillBlankAnswer = (questionIndex, value) => {
+                setQuizAnswers({
+                    ...quizAnswers,
+                    [`${lessonKey}-${questionIndex}`]: value
+                });
+            };
+
+            const submitQuiz = () => {
+                setShowResults(true);
+                setTimerActive(false);
+                
+                // Calculate score
+                const correctAnswers = currentLessonData.questions.reduce((count, question, idx) => {
+                    const userAnswer = quizAnswers[`${lessonKey}-${idx}`];
+                    
+                    if (question.type === 'multiple' || question.type === 'truefalse') {
+                        return userAnswer === question.correct ? count + 1 : count;
+                    } else if (question.type === 'fillblank') {
+                        const normalizedAnswer = userAnswer ? userAnswer.toLowerCase().trim() : '';
+                        const normalizedCorrect = question.correct.toLowerCase();
+                        const correctAlternatives = question.alternatives ? 
+                            question.alternatives.map(alt => alt.toLowerCase()) : [];
+                        
+                        return normalizedAnswer === normalizedCorrect || 
+                               correctAlternatives.includes(normalizedAnswer) ? 
+                               count + 1 : count;
+                    }
+                    return count;
+                }, 0);
+                
+                const score = Math.round((correctAnswers / currentLessonData.questions.length) * 100);
+                
+                // Update attempts
+                setQuizAttempts(prev => ({
+                    ...prev,
+                    [lessonKey]: prev[lessonKey] + 1
+                }));
+                
+                // Add to history
+                const newHistoryItem = {
+                    date: new Date().toLocaleString(),
+                    score,
+                    correct: correctAnswers,
+                    total: currentLessonData.questions.length,
+                    answers: {...quizAnswers}
+                };
+                
+                setQuizHistory(prev => ({
+                    ...prev,
+                    [lessonKey]: [...prev[lessonKey], newHistoryItem]
+                }));
+                
+                // Mark lesson as completed if score is 80% or higher
+                if (score >= 80) {
+                    setCompletedLessons(new Set([...completedLessons, lessonKey]));
+                }
+            };
+
+            const retryQuiz = () => {
+                // Clear answers for this lesson
+                const newAnswers = {...quizAnswers};
+                currentLessonData.questions.forEach((_, idx) => {
+                    delete newAnswers[`${lessonKey}-${idx}`];
+                });
+                setQuizAnswers(newAnswers);
+                setShowResults(false);
+                setTimeLeft(currentLessonData.timer);
+                setTimerActive(true);
+            };
+
+            const formatTime = (seconds) => {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            };
+
+            const calculateProgress = () => {
+                const totalLessons = course.modules.reduce((sum, mod) => sum + mod.lessons.length, 0);
+                return Math.round((completedLessons.size / totalLessons) * 100);
+            };
+
+            const isLastLesson = currentModule === course.modules.length - 1 && 
+                               currentLesson === currentModuleData.lessons.length - 1;
+
+            const startCourse = () => {
+                setShowIntro(false);
+            };
+
+            const toggleSidebar = () => {
+                setSidebarOpen(!sidebarOpen);
+            };
+
+            // Edit mode functions
+            const toggleEditMode = () => {
+                setEditMode(!editMode);
+            };
+
+            const saveContent = () => {
+                setEditMode(false);
+                showNotification('Content saved successfully!');
+            };
+
+            const cancelEdit = () => {
+                // Reset to initial course data
+                setCourse(initialCourse);
+                setEditMode(false);
+                showNotification('Changes discarded', 'error');
+            };
+
+            const updateLessonTitle = (e) => {
+                const newTitle = e.target.value;
+                const updatedModules = [...course.modules];
+                updatedModules[currentModule].lessons[currentLesson].title = newTitle;
+                setCourse({...course, modules: updatedModules});
+            };
+
+            const updateLessonContent = (e) => {
+                const newContent = e.target.value;
+                const updatedModules = [...course.modules];
+                updatedModules[currentModule].lessons[currentLesson].content = newContent;
+                setCourse({...course, modules: updatedModules});
+            };
+
+            const updateQuizTimer = (e) => {
+                const newTimer = parseInt(e.target.value) || 0;
+                const updatedModules = [...course.modules];
+                updatedModules[currentModule].lessons[currentLesson].timer = newTimer;
+                setCourse({...course, modules: updatedModules});
+            };
+
+            const updateQuestionText = (qIndex, e) => {
+                const newText = e.target.value;
+                const updatedModules = [...course.modules];
+                updatedModules[currentModule].lessons[currentLesson].questions[qIndex].q = newText;
+                setCourse({...course, modules: updatedModules});
+            };
+
+            const updateQuestionType = (qIndex, e) => {
+                const newType = e.target.value;
+                const updatedModules = [...course.modules];
+                updatedModules[currentModule].lessons[currentLesson].questions[qIndex].type = newType;
+                setCourse({...course, modules: updatedModules});
+            };
+
+            const updateQuestionExplanation = (qIndex, e) => {
+                const newExplanation = e.target.value;
+                const updatedModules = [...course.modules];
+                updatedModules[currentModule].lessons[currentLesson].questions[qIndex].explanation = newExplanation;
+                setCourse({...course, modules: updatedModules});
+            };
+
+            const updateQuestionCorrect = (qIndex, value) => {
+                const updatedModules = [...course.modules];
+                updatedModules[currentModule].lessons[currentLesson].questions[qIndex].correct = value;
+                setCourse({...course, modules: updatedModules});
+            };
+
+            const updateQuestionOption = (qIndex, optIndex, e) => {
+                const newOption = e.target.value;
+                const updatedModules = [...course.modules];
+                updatedModules[currentModule].lessons[currentLesson].questions[qIndex].options[optIndex] = newOption;
+                setCourse({...course, modules: updatedModules});
+            };
+
+            const updateQuestionFillBlank = (qIndex, e) => {
+                const newCorrect = e.target.value;
+                const updatedModules = [...course.modules];
+                updatedModules[currentModule].lessons[currentLesson].questions[qIndex].correct = newCorrect;
+                setCourse({...course, modules: updatedModules});
+            };
+
+            const updateQuestionAlternatives = (qIndex, e) => {
+                const newAlternatives = e.target.value.split(',').map(a => a.trim());
+                const updatedModules = [...course.modules];
+                updatedModules[currentModule].lessons[currentLesson].questions[qIndex].alternatives = newAlternatives;
+                setCourse({...course, modules: updatedModules});
+            };
+
+            const addQuestionOption = (qIndex) => {
+                const updatedModules = [...course.modules];
+                if (!updatedModules[currentModule].lessons[currentLesson].questions[qIndex].options) {
+                    updatedModules[currentModule].lessons[currentLesson].questions[qIndex].options = [];
+                }
+                updatedModules[currentModule].lessons[currentLesson].questions[qIndex].options.push("New option");
+                setCourse({...course, modules: updatedModules});
+            };
+
+            const removeQuestionOption = (qIndex, optIndex) => {
+                const updatedModules = [...course.modules];
+                updatedModules[currentModule].lessons[currentLesson].questions[qIndex].options.splice(optIndex, 1);
+                setCourse({...course, modules: updatedModules});
+            };
+
+            const addQuizQuestion = () => {
+                const updatedModules = [...course.modules];
+                if (!updatedModules[currentModule].lessons[currentLesson].questions) {
+                    updatedModules[currentModule].lessons[currentLesson].questions = [];
+                }
+                updatedModules[currentModule].lessons[currentLesson].questions.push({
+                    q: "New question",
+                    type: "multiple",
+                    options: ["Option 1", "Option 2", "Option 3"],
+                    correct: 0,
+                    explanation: "Explanation for this question"
+                });
+                setCourse({...course, modules: updatedModules});
+            };
+
+            const removeQuizQuestion = (qIndex) => {
+                const updatedModules = [...course.modules];
+                updatedModules[currentModule].lessons[currentLesson].questions.splice(qIndex, 1);
+                setCourse({...course, modules: updatedModules});
+            };
+
+            // Simplified audio functions
+            const togglePlay = () => {
+                const audio = audioRef.current;
+                if (!audio) return;
+
+                if (isPlaying) {
+                    audio.pause();
+                    setIsPlaying(false);
+                } else {
+                    audio.play();
+                    setIsPlaying(true);
+                    
+                    // Update transcript index
+                    if (audioData[lessonKey] && audioData[lessonKey].transcript) {
+                        setCurrentTranscriptIndex(0);
+                    }
+                }
+            };
+
+            const handleFileUpload = (e) => {
+                try {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const audioUrl = event.target.result;
+                        setAudioData(prev => ({
+                            ...prev,
+                            [lessonKey]: {
+                                ...prev[lessonKey],
+                                url: audioUrl
+                            }
+                        }));
+                        showNotification('Audio file uploaded successfully!');
+                    };
+                    reader.onerror = (error) => {
+                        console.error('Error reading file:', error);
+                        showNotification('Error reading audio file', 'error');
+                    };
+                    reader.readAsDataURL(file);
+                } catch (error) {
+                    console.error('Error handling file upload:', error);
+                    showNotification('Error uploading audio file', 'error');
+                }
+            };
+
+            const toggleTranscript = () => {
+                setShowTranscript(!showTranscript);
+            };
+
+            // Function to render content with markdown-like formatting
+            const renderContent = (content) => {
+                if (!content) return null;
+                
+                return content.split('\n\n').map((paragraph, pIndex) => {
+                    // Check for headings (## or # at the beginning)
+                    if (paragraph.startsWith('## ')) {
+                        return <h3 key={pIndex} className="content-section">{paragraph.substring(3)}</h3>;
+                    } else if (paragraph.startsWith('# ')) {
+                        return <h2 key={pIndex}>{paragraph.substring(2)}</h2>;
+                    }
+                    
+                    // Check for lists (* or - at the beginning)
+                    else if (paragraph.startsWith('* ') || paragraph.startsWith('- ')) {
+                        const items = paragraph.split('\n');
+                        return (
+                            <ul key={pIndex}>
+                                {items.map((item, iIndex) => (
+                                    <li key={iIndex}>{item.substring(item.startsWith('* ') ? 2 : 1)}</li>
+                                ))}
+                            </ul>
+                        );
+                    }
+                    
+                    // Check for bold text (**text**)
+                    else if (paragraph.includes('**')) {
+                        const parts = paragraph.split('**');
+                        const elements = [];
+                        for (let i = 0; i < parts.length; i++) {
+                            if (i % 2 === 0) {
+                                elements.push(<span key={i}>{parts[i]}</span>);
+                            } else {
+                                elements.push(<strong key={i}>{parts[i]}</strong>);
+                            }
+                        }
+                        return <p key={pIndex}>{elements}</p>;
+                    }
+                    
+                    // Check for italic text (*text*)
+                    else if (paragraph.includes('*') && !paragraph.startsWith('* ')) {
+                        const parts = paragraph.split('*');
+                        const elements = [];
+                        for (let i = 0; i < parts.length; i++) {
+                            if (i % 2 === 0) {
+                                elements.push(<span key={i}>{parts[i]}</span>);
+                            } else {
+                                elements.push(<em key={i}>{parts[i]}</em>);
+                            }
+                        }
+                        return <p key={pIndex}>{elements}</p>;
+                    }
+                    
+                    // Regular paragraph
+                    else {
+                        return <p key={pIndex}>{paragraph}</p>;
+                    }
+                });
+            };
+
+            return (
+                <div className="container">
+                    {showIntro ? (
+                        <div className="intro-page">
+                            <h1 className="intro-title">{course.title}</h1>
+                            <p>Welcome to the KCSE Biology Training course on Ecology. This course covers all essential ecology topics for the Kenya Certificate of Secondary Education examination.</p>
+                            
+                            <div className="intro-section">
+                                <h3>Course Overview</h3>
+                                <p>This course is structured into {course.modules.length} modules covering:</p>
+                                <ul>
+                                    {course.modules.map((module, index) => (
+                                        <li key={index}>
+                                            <strong>{module.title}</strong> - {module.lessons.length} lessons
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                            
+                            <div className="feature-grid">
+                                <div className="feature-card">
+                                    <div className="feature-icon">📚</div>
+                                    <h3>Comprehensive Content</h3>
+                                    <p>Structured lessons covering all essential KCSE ecology topics</p>
+                                </div>
+                                <div className="feature-card">
+                                    <div className="feature-icon">🎯</div>
+                                    <h3>Interactive Quizzes</h3>
+                                    <p>Test your knowledge with timed quizzes and instant feedback</p>
+                                </div>
+                                <div className="feature-card">
+                                    <div className="feature-icon">🔊</div>
+                                    <h3>Audio Learning</h3>
+                                    <p>Listen to lessons with integrated audio player and transcripts</p>
+                                </div>
+                                <div className="feature-card">
+                                    <div className="feature-icon">📊</div>
+                                    <h3>Progress Tracking</h3>
+                                    <p>Monitor your progress and review quiz history</p>
+                                </div>
+                            </div>
+                            
+                            <button className="btn btn-primary btn-large" onClick={startCourse}>
+                                Start Learning
+                            </button>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="mobile-header">
+                                <h2>{course.title}</h2>
+                                <button className="mobile-menu-btn" onClick={toggleSidebar}>
+                                    ☰
+                                </button>
+                            </div>
+                            
+                            <div className="header">
+                                <h2>{currentModuleData.title} - {currentLessonData.title}</h2>
+                                <div className="progress-bar">
+                                    <div className="progress-fill" style={{ width: `${calculateProgress()}%` }}></div>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px' }}>
+                                    <span>Progress: {calculateProgress()}%</span>
+                                    {currentLessonData.type === 'quiz' && timeLeft !== null && (
+                                        <div>
+                                            <span>Time remaining: </span>
+                                            <span className={`timer ${timeLeft < 60 ? 'warning' : ''}`}>
+                                                {formatTime(timeLeft)}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            
+                            <div className="main-layout">
+                                <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+                                    <h3>Course Modules</h3>
+                                    {course.modules.map((module, moduleIndex) => (
+                                        <div key={moduleIndex}>
+                                            <h4 style={{ marginTop: '15px', marginBottom: '5px' }}>{module.title}</h4>
+                                            {module.lessons.map((lesson, lessonIndex) => {
+                                                const lessonKey = `${moduleIndex}-${lessonIndex}`;
+                                                const isCompleted = completedLessons.has(lessonKey);
+                                                const isActive = moduleIndex === currentModule && lessonIndex === currentLesson;
+                                                
+                                                return (
+                                                    <div 
+                                                        key={lessonIndex}
+                                                        className={`lesson-item ${isActive ? 'active' : ''}`}
+                                                        onClick={() => {
+                                                            setCurrentModule(moduleIndex);
+                                                            setCurrentLesson(lessonIndex);
+                                                            setShowResults(false);
+                                                            setEditMode(false);
+                                                            setSidebarOpen(false);
+                                                        }}
+                                                    >
+                                                        <span style={{ marginRight: '10px' }}>
+                                                            {isCompleted ? '✅' : lesson.type === 'quiz' ? '❓' : '📖'}
+                                                        </span>
+                                                        {lesson.title}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    ))}
+                                </div>
+                                
+                                <div className="content">
+                                    {currentLessonData.type === 'content' ? (
+                                        <div className="lesson-content">
+                                            <div className="edit-controls">
+                                                <button 
+                                                    className={`btn ${editMode ? 'btn-save' : 'btn-edit'}`}
+                                                    onClick={editMode ? saveContent : toggleEditMode}
+                                                >
+                                                    {editMode ? 'Save Changes' : 'Edit Content'}
+                                                </button>
+                                                {editMode && (
+                                                    <button className="btn btn-cancel" onClick={cancelEdit}>
+                                                        Cancel
+                                                    </button>
+                                                )}
+                                            </div>
+                                            
+                                            {editMode ? (
+                                                <div className="edit-section">
+                                                    <h4>Edit Lesson</h4>
+                                                    <div className="edit-input-group">
+                                                        <label>Lesson Title:</label>
+                                                        <input 
+                                                            type="text" 
+                                                            className="edit-input"
+                                                            value={currentLessonData.title}
+                                                            onChange={updateLessonTitle}
+                                                        />
+                                                    </div>
+                                                    <div className="edit-input-group">
+                                                        <label>Lesson Content:</label>
+                                                        <textarea 
+                                                            className="edit-textarea"
+                                                            value={currentLessonData.content}
+                                                            onChange={updateLessonContent}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div>
+                                                    {renderContent(currentLessonData.content)}
+                                                    
+                                                    {/* Simplified Audio Button */}
+                                                    <div className="audio-button-container">
+                                                        <div className="audio-upload">
+                                                            <label htmlFor={`audio-upload-${lessonKey}`} className="upload-btn">
+                                                                Upload Audio
+                                                            </label>
+                                                            <input 
+                                                                id={`audio-upload-${lessonKey}`}
+                                                                type="file" 
+                                                                className="file-input"
+                                                                accept="audio/*"
+                                                                onChange={handleFileUpload}
+                                                            />
+                                                            {audioData[lessonKey] && audioData[lessonKey].url && (
+                                                                <span className="audio-info">Audio file uploaded</span>
+                                                            )}
+                                                        </div>
+                                                        
+                                                        {audioData[lessonKey] && audioData[lessonKey].url && (
+                                                            <>
+                                                                <audio ref={audioRef} src={audioData[lessonKey].url} />
+                                                                <button 
+                                                                    className={`btn btn-audio ${isPlaying ? 'audio-playing' : ''}`}
+                                                                    onClick={togglePlay}
+                                                                >
+                                                                    {isPlaying ? (
+                                                                        <>
+                                                                            <span>⏸️</span>
+                                                                            <span>Pause</span>
+                                                                        </>
+                                                                    ) : (
+                                                                        <>
+                                                                            <span>▶️</span>
+                                                                            <span>Listen to Lesson</span>
+                                                                        </>
+                                                                    )}
+                                                                </button>
+                                                                <div className={`audio-status ${isPlaying ? 'audio-playing' : ''}`}>
+                                                                    {isPlaying ? 'Playing audio...' : 'Click to listen'}
+                                                                </div>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                    
+                                                    {/* Transcript Display */}
+                                                    {audioData[lessonKey] && audioData[lessonKey].transcript && audioData[lessonKey].transcript.length > 0 && (
+                                                        <div className="transcript-container">
+                                                            <div className="transcript-header">
+                                                                <h4>Transcript</h4>
+                                                                <button className="btn btn-secondary" onClick={toggleTranscript}>
+                                                                    {showTranscript ? 'Hide' : 'Show'}
+                                                                </button>
+                                                            </div>
+                                                            
+                                                            {showTranscript && (
+                                                                <div className="transcript-text">
+                                                                    {audioData[lessonKey].transcript.map((line, index) => (
+                                                                        <p key={index} className={index === currentTranscriptIndex ? 'transcript-current' : ''}>
+                                                                            {line}
+                                                                        </p>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+                                            
+                                            <div className="navigation">
+                                                <button 
+                                                    className="btn btn-secondary" 
+                                                    onClick={handlePrevious}
+                                                    disabled={currentModule === 0 && currentLesson === 0}
+                                                >
+                                                    Previous
+                                                </button>
+                                                
+                                                <button 
+                                                    className="btn btn-primary" 
+                                                    onClick={handleComplete}
+                                                >
+                                                    {isLastLesson ? 'Finish Course' : 'Mark Complete & Continue'}
+                                                </button>
+                                                
+                                                <button 
+                                                    className="btn btn-secondary" 
+                                                    onClick={handleNext}
+                                                    disabled={isLastLesson}
+                                                >
+                                                    Next
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="lesson-content">
+                                            <h3>{currentLessonData.title}</h3>
+                                            
+                                            {editMode ? (
+                                                <div className="edit-section">
+                                                    <h4>Edit Quiz</h4>
+                                                    
+                                                    <div className="edit-input-group">
+                                                        <label>Quiz Title:</label>
+                                                        <input 
+                                                            type="text" 
+                                                            className="edit-input"
+                                                            value={currentLessonData.title}
+                                                            onChange={updateLessonTitle}
+                                                        />
+                                                    </div>
+                                                    
+                                                    <div className="edit-input-group">
+                                                        <label>Timer (seconds):</label>
+                                                        <input 
+                                                            type="number" 
+                                                            className="edit-input"
+                                                            value={currentLessonData.timer}
+                                                            onChange={updateQuizTimer}
+                                                        />
+                                                    </div>
+                                                    
+                                                    <div>
+                                                        <h4>Questions:</h4>
+                                                        {currentLessonData.questions.map((question, qIndex) => (
+                                                            <div key={qIndex} className="edit-section">
+                                                                <h4>Question {qIndex + 1}</h4>
+                                                                
+                                                                <div className="edit-input-group">
+                                                                    <label>Question Text:</label>
+                                                                    <input 
+                                                                        type="text" 
+                                                                        className="edit-input"
+                                                                        value={question.q}
+                                                                        onChange={(e) => updateQuestionText(qIndex, e)}
+                                                                    />
+                                                                </div>
+                                                                
+                                                                <div className="edit-input-group">
+                                                                    <label>Question Type:</label>
+                                                                    <select 
+                                                                        className="edit-select"
+                                                                        value={question.type}
+                                                                        onChange={(e) => updateQuestionType(qIndex, e)}
+                                                                    >
+                                                                        <option value="multiple">Multiple Choice</option>
+                                                                        <option value="truefalse">True/False</option>
+                                                                        <option value="fillblank">Fill in the Blank</option>
+                                                                    </select>
+                                                                </div>
+                                                                
+                                                                {question.type === 'multiple' && (
+                                                                    <div>
+                                                                        <h4>Options:</h4>
+                                                                        {question.options.map((option, optIndex) => (
+                                                                            <div key={optIndex} className="edit-option">
+                                                                                <input 
+                                                                                    type="text" 
+                                                                                    value={option}
+                                                                                    onChange={(e) => updateQuestionOption(qIndex, optIndex, e)}
+                                                                                />
+                                                                                <button onClick={() => removeQuestionOption(qIndex, optIndex)}>
+                                                                                    Remove
+                                                                                </button>
+                                                                            </div>
+                                                                        ))}
+                                                                        <button className="add-option" onClick={() => addQuestionOption(qIndex)}>
+                                                                            Add Option
+                                                                        </button>
+                                                                        
+                                                                        <div className="edit-input-group">
+                                                                            <label>Correct Answer Index:</label>
+                                                                            <input 
+                                                                                type="number" 
+                                                                                className="edit-input"
+                                                                                value={question.correct}
+                                                                                onChange={(e) => updateQuestionCorrect(qIndex, parseInt(e.target.value))}
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                                
+                                                                {question.type === 'truefalse' && (
+                                                                    <div className="edit-input-group">
+                                                                        <label>Correct Answer:</label>
+                                                                        <select 
+                                                                            className="edit-select"
+                                                                            value={question.correct}
+                                                                            onChange={(e) => updateQuestionCorrect(qIndex, e.target.value === 'true')}
+                                                                        >
+                                                                            <option value={true}>True</option>
+                                                                            <option value={false}>False</option>
+                                                                        </select>
+                                                                    </div>
+                                                                )}
+                                                                
+                                                                {question.type === 'fillblank' && (
+                                                                    <>
+                                                                        <div className="edit-input-group">
+                                                                            <label>Correct Answer:</label>
+                                                                            <input 
+                                                                                type="text" 
+                                                                                className="edit-input"
+                                                                                value={question.correct}
+                                                                                onChange={(e) => updateQuestionFillBlank(qIndex, e)}
+                                                                            />
+                                                                        </div>
+                                                                        
+                                                                        <div className="edit-input-group">
+                                                                            <label>Alternative Answers (comma-separated):</label>
+                                                                            <input 
+                                                                                type="text" 
+                                                                                className="edit-input"
+                                                                                value={question.alternatives ? question.alternatives.join(', ') : ''}
+                                                                                onChange={(e) => updateQuestionAlternatives(qIndex, e)}
+                                                                            />
+                                                                        </div>
+                                                                    </>
+                                                                )}
+                                                                
+                                                                <div className="edit-input-group">
+                                                                    <label>Explanation:</label>
+                                                                    <textarea 
+                                                                        className="edit-textarea"
+                                                                        value={question.explanation}
+                                                                        onChange={(e) => updateQuestionExplanation(qIndex, e)}
+                                                                    />
+                                                                </div>
+                                                                
+                                                                <button 
+                                                                    className="btn btn-cancel" 
+                                                                    onClick={() => removeQuizQuestion(qIndex)}
+                                                                >
+                                                                    Remove Question
+                                                                </button>
+                                                            </div>
+                                                        ))}
+                                                        
+                                                        <button className="add-option" onClick={addQuizQuestion}>
+                                                            Add Question
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div>
+                                                    {!showResults ? (
+                                                        <div>
+                                                            {currentLessonData.questions.map((question, qIndex) => (
+                                                                <div key={qIndex} className="quiz-question">
+                                                                    <p><strong>Question {qIndex + 1}:</strong> {question.q}</p>
+                                                                    
+                                                                    {question.type === 'multiple' && (
+                                                                        <div className="quiz-options-grid">
+                                                                            {question.options.map((option, optIndex) => (
+                                                                                <button
+                                                                                    key={optIndex}
+                                                                                    className={`quiz-option ${quizAnswers[`${lessonKey}-${qIndex}`] === optIndex ? 'selected' : ''}`}
+                                                                                    onClick={() => handleQuizAnswer(qIndex, optIndex)}
+                                                                                >
+                                                                                    {option}
+                                                                                </button>
+                                                                            ))}
+                                                                        </div>
+                                                                    )}
+                                                                    
+                                                                    {question.type === 'truefalse' && (
+                                                                        <div className="true-false-container">
+                                                                            <button
+                                                                                className={`quiz-option ${quizAnswers[`${lessonKey}-${qIndex}`] === true ? 'selected' : ''}`}
+                                                                                onClick={() => handleQuizAnswer(qIndex, true)}
+                                                                            >
+                                                                                True
+                                                                            </button>
+                                                                            <button
+                                                                                className={`quiz-option ${quizAnswers[`${lessonKey}-${qIndex}`] === false ? 'selected' : ''}`}
+                                                                                onClick={() => handleQuizAnswer(qIndex, false)}
+                                                                            >
+                                                                                False
+                                                                            </button>
+                                                                        </div>
+                                                                    )}
+                                                                    
+                                                                    {question.type === 'fillblank' && (
+                                                                        <div>
+                                                                            <input
+                                                                                type="text"
+                                                                                className="fill-blank"
+                                                                                placeholder="Type your answer here"
+                                                                                value={quizAnswers[`${lessonKey}-${qIndex}`] || ''}
+                                                                                onChange={(e) => handleFillBlankAnswer(qIndex, e.target.value)}
+                                                                            />
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            ))}
+                                                            
+                                                            <div className="navigation">
+                                                                <button 
+                                                                    className="btn btn-secondary" 
+                                                                    onClick={handlePrevious}
+                                                                    disabled={currentModule === 0 && currentLesson === 0}
+                                                                >
+                                                                    Previous
+                                                                </button>
+                                                                
+                                                                <button 
+                                                                    className="btn btn-primary" 
+                                                                    onClick={submitQuiz}
+                                                                >
+                                                                    Submit Quiz
+                                                                </button>
+                                                                
+                                                                <button 
+                                                                    className="btn btn-secondary" 
+                                                                    onClick={() => setShowHistoryModal(true)}
+                                                                >
+                                                                    View History
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div>
+                                                            <h3>Quiz Results</h3>
+                                                            
+                                                            {currentLessonData.questions.map((question, qIndex) => {
+                                                                const userAnswer = quizAnswers[`${lessonKey}-${qIndex}`];
+                                                                let isCorrect = false;
+                                                                
+                                                                if (question.type === 'multiple' || question.type === 'truefalse') {
+                                                                    isCorrect = userAnswer === question.correct;
+                                                                } else if (question.type === 'fillblank') {
+                                                                    const normalizedAnswer = userAnswer ? userAnswer.toLowerCase().trim() : '';
+                                                                    const normalizedCorrect = question.correct.toLowerCase();
+                                                                    const correctAlternatives = question.alternatives ? 
+                                                                        question.alternatives.map(alt => alt.toLowerCase()) : [];
+                                                                    
+                                                                    isCorrect = normalizedAnswer === normalizedCorrect || 
+                                                                                correctAlternatives.includes(normalizedAnswer);
+                                                                }
+                                                                
+                                                                return (
+                                                                    <div key={qIndex} className="quiz-question">
+                                                                        <p><strong>Question {qIndex + 1}:</strong> {question.q}</p>
+                                                                        
+                                                                        {question.type === 'multiple' && (
+                                                                            <div className="quiz-options-grid">
+                                                                                {question.options.map((option, optIndex) => {
+                                                                                    const isSelected = userAnswer === optIndex;
+                                                                                    const isCorrectOption = optIndex === question.correct;
+                                                                                    
+                                                                                    let className = "quiz-option";
+                                                                                    if (isSelected) {
+                                                                                        className += isCorrect ? " correct" : " incorrect";
+                                                                                    } else if (isCorrectOption) {
+                                                                                        className += " correct";
+                                                                                    }
+                                                                                    
+                                                                                    return (
+                                                                                        <div key={optIndex} className={className}>
+                                                                                            {option}
+                                                                                        </div>
+                                                                                    );
+                                                                                })}
+                                                                            </div>
+                                                                        )}
+                                                                        
+                                                                        {question.type === 'truefalse' && (
+                                                                            <div className="true-false-container">
+                                                                                <div className={`quiz-option ${userAnswer === true ? (isCorrect ? 'correct' : 'incorrect') : ''}`}>
+                                                                                    True
+                                                                                </div>
+                                                                                <div className={`quiz-option ${userAnswer === false ? (isCorrect ? 'correct' : 'incorrect') : ''}`}>
+                                                                                    False
+                                                                                </div>
+                                                                            </div>
+                                                                        )}
+                                                                        
+                                                                        {question.type === 'fillblank' && (
+                                                                            <div>
+                                                                                <p>Your answer: <span className={isCorrect ? 'correct' : 'incorrect'}>{userAnswer || '(No answer provided)'}</span></p>
+                                                                                <p>Correct answer: <span className="correct">{question.correct}</span></p>
+                                                                            </div>
+                                                                        )}
+                                                                        
+                                                                        <div className={`explanation ${isCorrect ? 'correct' : 'incorrect'}`}>
+                                                                            {question.explanation}
+                                                                        </div>
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                            
+                                                            <div className="navigation">
+                                                                <button 
+                                                                    className="btn btn-secondary" 
+                                                                    onClick={retryQuiz}
+                                                                >
+                                                                    Retry Quiz
+                                                                </button>
+                                                                
+                                                                <button 
+                                                                    className="btn btn-primary" 
+                                                                    onClick={handleNext}
+                                                                    disabled={isLastLesson}
+                                                                >
+                                                                    {isLastLesson ? 'Finish Course' : 'Continue'}
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+                                            
+                                            <div className="edit-controls">
+                                                <button 
+                                                    className={`btn ${editMode ? 'btn-save' : 'btn-edit'}`}
+                                                    onClick={editMode ? saveContent : toggleEditMode}
+                                                >
+                                                    {editMode ? 'Save Changes' : 'Edit Quiz'}
+                                                </button>
+                                                {editMode && (
+                                                    <button className="btn btn-cancel" onClick={cancelEdit}>
+                                                        Cancel
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            
+                            <button className="sidebar-toggle" onClick={toggleSidebar}>
+                                ☰
+                            </button>
+                        </>
+                    )}
+                    
+                    {/* Notification */}
+                    {notification.show && (
+                        <div className={`notification ${notification.type}`}>
+                            {notification.message}
+                        </div>
+                    )}
+                    
+                    {/* History Modal */}
+                    {showHistoryModal && (
+                        <div className="modal">
+                            <div className="modal-content">
+                                <h3>Quiz History</h3>
+                                
+                                {quizHistory[lessonKey] && quizHistory[lessonKey].length > 0 ? (
+                                    <div>
+                                        {quizHistory[lessonKey].map((history, index) => (
+                                            <div key={index} className="history-item">
+                                                <p><strong>Date:</strong> {history.date}</p>
+                                                <p><strong>Score:</strong> {history.score}% ({history.correct}/{history.total})</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p>No quiz history available for this lesson.</p>
+                                )}
+                                
+                                <div style={{ marginTop: '20px', textAlign: 'center' }}>
+                                    <button 
+                                        className="btn btn-primary" 
+                                        onClick={() => setShowHistoryModal(false)}
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // Add error boundary to catch React errors
+        class ErrorBoundary extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = { hasError: false };
+            }
+
+            static getDerivedStateFromError(error) {
+                return { hasError: true };
+            }
+
+            componentDidCatch(error, errorInfo) {
+                console.error("Error caught by Error Boundary:", error, errorInfo);
+            }
+
+            render() {
+                if (this.state.hasError) {
+                    return (
+                        <div style={{ padding: '20px', color: 'red' }}>
+                            <h2>Something went wrong.</h2>
+                            <p>Please refresh the page and try again.</p>
+                        </div>
+                    );
+                }
+
+                return this.props.children;
+            }
+        }
+
+        // Render the application with error boundary
+        try {
+            ReactDOM.render(
+                <ErrorBoundary>
+                    <BiologyCourse />
+                </ErrorBoundary>, 
+                document.getElementById('root')
+            );
+        } catch (error) {
+            console.error('Error rendering application:', error);
+            document.getElementById('root').innerHTML = 
+                '<div style="color: red; padding: 20px;">Failed to initialize application. Please check the browser console for details.</div>';
+        }
+    </script>
+</body>
+</html>
